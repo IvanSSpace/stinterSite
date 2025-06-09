@@ -144,9 +144,36 @@ export class Database {
     }
   }
 
+  // Очистка всех данных
+  async clearAllData() {
+    try {
+      await new Promise((resolve, reject) => {
+        this.db.run("DELETE FROM content_blocks", (err) => {
+          if (err) reject(err)
+          else resolve()
+        })
+      })
+
+      await new Promise((resolve, reject) => {
+        this.db.run("DELETE FROM forum_info", (err) => {
+          if (err) reject(err)
+          else resolve()
+        })
+      })
+
+      console.log("🗑️ Все данные очищены из базы")
+    } catch (error) {
+      console.error("❌ Ошибка очистки данных:", error)
+      throw error
+    }
+  }
+
   // Заполнение данными форума
   async seedForumData() {
     try {
+      // Сначала очищаем все данные
+      await this.clearAllData()
+
       // Основная информация о теме
       await new Promise((resolve, reject) => {
         this.db.run(
@@ -158,7 +185,7 @@ export class Database {
           [
             1,
             "Объявления и реклама",
-            "Только новая техника Apple от Стингера! Работаем с 2007 года",
+            "Техника Apple от StiNGer - Официальный прайс-лист",
             "12 Марта 2014",
             16071,
             10436345,
