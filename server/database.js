@@ -171,82 +171,459 @@ export class Database {
         )
       })
 
-      // Контентные блоки
+      // Контентные блоки с реальными данными
       const contentBlocks = [
         {
-          title: "Заголовок раздела",
-          content: "Объявления и реклама",
-          block_type: "section_header",
+          title: "Важная информация",
+          content: `<div class="notice">
+            <h3>⚡ Срочных новостей нет. Работаем!</h3>
+            <p><strong>Привет, всем привет! Добро пожаловать!</strong> ✋</p>
+            <p><em>В чужой монастырь со своим уставом не ходят</em> (с) Русская пословица</p>
+          </div>`,
+          block_type: "notice",
           position: 1,
         },
         {
-          title: "Название темы",
-          content: "Только новая техника Apple от Стингера! Работаем с 2007 года",
-          block_type: "topic_title",
+          title: "Контакты и связь",
+          content: `<div class="contacts-main">
+            <h3>📞 Контактная информация</h3>
+
+            <div class="contact-block">
+              <h4>🔥 Связь #1 (Основной номер):</h4>
+              <p><strong>+7-908-318-5381</strong></p>
+              <p><strong>Время:</strong> 11:00 - 20:00 (Без выходных!)</p>
+              <p>⚠️ Перед звонком ВНИМАТЕЛЬНО изучите информацию ниже!</p>
+              <p>📋 Коротко и по делу: модель, объем, цвет. Далее - считаю, а далее да-да, нет-нет.</p>
+              <p>🚫 НЕ переписываюсь НИГДЕ, ни на какие темы и ни в каких мессенджерах.</p>
+            </div>
+
+            <div class="contact-block">
+              <h4>💬 Связь #2 (Консультации):</h4>
+              <p><strong>+7-905-941-9159</strong></p>
+              <p>📱 ВКонтакте / Telegram / WhatsApp</p>
+              <p><strong>Время:</strong> КРУГЛОСУТОЧНО и БЕЗ выходных</p>
+              <p>💰 <em>НО +500р к ценам прайса!</em></p>
+              <p>🚚 Есть доставка по городу по договоренности и ЗА ОТДЕЛЬНУЮ ПЛАТУ!</p>
+              <p>💳 Оплата по безналу для ЮР. ЛИЦ!</p>
+            </div>
+
+            <div class="warning">
+              <p>⚠️ <strong>ВАЖНО:</strong> Если Вы сначала пишете/звоните на втором номере, то на первый звонить по этому же вопросу уже НЕ НУЖНО!</p>
+            </div>
+          </div>`,
+          block_type: "contacts",
           position: 2,
         },
         {
-          title: "Информация о теме",
-          content:
-            "Создана: 12 Марта 2014 Срд 15:13:42<br>Сообщений в теме: 16071 (+4), просмотров: 10436345<br>Всего в теме участников: 808",
-          block_type: "topic_info",
+          title: "iPhone 16 серии",
+          content: `<div class="products-section">
+            <h3>📱 iPhone 16 / iPhone 16 Plus / iPhone 16 Pro / iPhone 16 Pro Max</h3>
+
+            <div class="product-info">
+              <p>💰 Цены ПРИМЕРНЫЕ и постоянно меняются от курса доллара и спроса</p>
+              <p>⏰ Прайс на день всегда после 14:00</p>
+              <p>🚚 Доставка в Омск 4-5 дней</p>
+            </div>
+
+            <div class="country-info">
+              <h4>🌍 Регионы и особенности:</h4>
+              <p>🇩🇪🇸🇦🇧🇷🇰🇿🇹🇼🇨🇦🇯🇵🇦🇺🇦🇪🇬🇧🇪🇺🇸🇬🇮🇳 - 1Sim + ESIM</p>
+              <p>🇰🇷 - Корея. Звук затвора камеры не отключается</p>
+              <p>🇨🇳🇭🇰 - Китай/Гонконг. Две физические сим-карты, без ESIM</p>
+              <p>🇺🇸 - США. Только ESIM, БЕЗ ФИЗИЧЕСКИХ СИМ-карт</p>
+            </div>
+
+            <div class="products-grid">
+              <div class="product-category">
+                <h4>📱 iPhone 16E</h4>
+                <div class="product-item">
+                  <span class="model">16E 128GB Black 🇮🇳</span>
+                  <span class="price">47 000 ₽</span>
+                </div>
+                <div class="product-item">
+                  <span class="model">16E 128GB White 🇮🇳</span>
+                  <span class="price">46 800 ₽</span>
+                </div>
+                <div class="product-item">
+                  <span class="model">16E 256GB White 🇮🇳</span>
+                  <span class="price">57 500 ₽</span>
+                </div>
+              </div>
+
+              <div class="product-category">
+                <h4>📱 iPhone 16</h4>
+                <div class="product-item">
+                  <span class="model">16 128GB Black 🇨🇳</span>
+                  <span class="price">61 400 ₽</span>
+                </div>
+                <div class="product-item">
+                  <span class="model">16 128GB Black 🇮🇳</span>
+                  <span class="price">65 000 ₽</span>
+                </div>
+                <div class="product-item">
+                  <span class="model">16 128GB White 🇨🇳</span>
+                  <span class="price">60 300 ₽</span>
+                </div>
+                <div class="product-item">
+                  <span class="model">16 128GB Teal 🇮🇳</span>
+                  <span class="price">61 000 ₽</span>
+                </div>
+                <div class="product-item">
+                  <span class="model">16 256GB Black 🇮🇳</span>
+                  <span class="price">73 000 ₽</span>
+                </div>
+                <div class="product-item">
+                  <span class="model">16 512GB Black 🇦🇪</span>
+                  <span class="price">87 000 ₽</span>
+                </div>
+              </div>
+
+              <div class="product-category">
+                <h4>📱 iPhone 16 Plus</h4>
+                <div class="product-item">
+                  <span class="model">16 Plus 128GB Black 🇮🇳</span>
+                  <span class="price">73 500 ₽</span>
+                </div>
+                <div class="product-item">
+                  <span class="model">16 Plus 128GB White 🇮🇳</span>
+                  <span class="price">69 800 ₽</span>
+                </div>
+                <div class="product-item">
+                  <span class="model">16 Plus 256GB White 🇮🇳</span>
+                  <span class="price">81 000 ₽</span>
+                </div>
+                <div class="product-item">
+                  <span class="model">16 Plus 512GB Black 🇦🇪</span>
+                  <span class="price">95 000 ₽</span>
+                </div>
+              </div>
+
+              <div class="product-category">
+                <h4>🫧 iPhone 16 Pro</h4>
+                <div class="product-item">
+                  <span class="model">16 Pro 128GB Black 🇨🇳</span>
+                  <span class="price">75 000 ₽</span>
+                </div>
+                <div class="product-item">
+                  <span class="model">16 Pro 128GB Natural 🇪🇺</span>
+                  <span class="price">83 500 ₽</span>
+                </div>
+                <div class="product-item">
+                  <span class="model">16 Pro 256GB Natural 🇦🇪</span>
+                  <span class="price">95 000 ₽</span>
+                </div>
+                <div class="product-item">
+                  <span class="model">16 Pro 512GB Black 🇯🇵</span>
+                  <span class="price">107 700 ₽</span>
+                </div>
+                <div class="product-item">
+                  <span class="model">16 Pro 1TB Black 🇯🇵</span>
+                  <span class="price">132 500 ₽</span>
+                </div>
+              </div>
+
+              <div class="product-category">
+                <h4>🫧 iPhone 16 Pro Max</h4>
+                <div class="product-item">
+                  <span class="model">16 Pro Max 256GB Black 🇦🇪</span>
+                  <span class="price">99 100 ₽</span>
+                </div>
+                <div class="product-item">
+                  <span class="model">16 Pro Max 256GB White 🇯🇵</span>
+                  <span class="price">99 900 ₽</span>
+                </div>
+                <div class="product-item">
+                  <span class="model">16 Pro Max 512GB White 🇦🇪</span>
+                  <span class="price">116 000 ₽</span>
+                </div>
+                <div class="product-item">
+                  <span class="model">16 Pro Max 1TB Black 🇦🇪</span>
+                  <span class="price">133 800 ₽</span>
+                </div>
+              </div>
+            </div>
+          </div>`,
+          block_type: "iphone16",
           position: 3,
         },
         {
-          title: "О магазине StiNGer",
-          content: `<h3>🍎 Магазин техники Apple "StiNGer"</h3>
-          <p><strong>Работаем с 2007 года!</strong></p>
-          <p>📱 Специализируемся на продаже новой техники Apple:</p>
-          <ul>
-            <li>iPhone всех моделей</li>
-            <li>iPad и iPad Mini</li>
-            <li>MacBook и iMac</li>
-            <li>Apple Watch</li>
-            <li>Аксессуары Apple</li>
-          </ul>
-          <p>✅ Только оригинальная техника с гарантией<br>
-          🚚 Быстрая доставка по Омску<br>
-          💰 Конкурентные цены<br>
-          🔧 Сервисное обслуживание</p>`,
-          block_type: "store_info",
+          title: "iPhone 15 серии",
+          content: `<div class="products-section">
+            <h3>📱 iPhone 15 / iPhone 15 Plus / iPhone 15 Pro / iPhone 15 Pro Max</h3>
+
+            <div class="products-grid">
+              <div class="product-category">
+                <h4>📱 iPhone 15</h4>
+                <div class="product-item">
+                  <span class="model">15 128GB Midnight 🇮🇳</span>
+                  <span class="price">54 600 ₽</span>
+                </div>
+                <div class="product-item">
+                  <span class="model">15 128GB Pink 🇮🇳</span>
+                  <span class="price">54 600 ₽</span>
+                </div>
+                <div class="product-item">
+                  <span class="model">15 128GB Blue 🇮🇳</span>
+                  <span class="price">54 200 ₽</span>
+                </div>
+                <div class="product-item">
+                  <span class="model">15 256GB Pink 🇮🇳</span>
+                  <span class="price">63 600 ₽</span>
+                </div>
+              </div>
+
+              <div class="product-category">
+                <h4>📱 iPhone 15 Plus</h4>
+                <div class="product-item">
+                  <span class="model">15 Plus 128GB Green 🇮🇳</span>
+                  <span class="price">63 700 ₽</span>
+                </div>
+                <div class="product-item">
+                  <span class="model">15 Plus 128GB Yellow 🇮🇳</span>
+                  <span class="price">63 700 ₽</span>
+                </div>
+              </div>
+
+              <div class="product-category">
+                <h4>🪩 iPhone 15 Pro</h4>
+                <div class="product-item">
+                  <span class="model">15 Pro 128GB Blue 🇭🇰</span>
+                  <span class="price">70 500 ₽</span>
+                </div>
+                <div class="product-item">
+                  <span class="model">15 Pro 256GB Blue 🇭🇰</span>
+                  <span class="price">80 500 ₽</span>
+                </div>
+                <div class="product-item">
+                  <span class="model">15 Pro 512GB Natural 🇦🇪</span>
+                  <span class="price">97 800 ₽</span>
+                </div>
+              </div>
+
+              <div class="product-category">
+                <h4>🪩 iPhone 15 Pro Max</h4>
+                <div class="product-item">
+                  <span class="model">15 Pro Max 256GB Black 🇦🇪</span>
+                  <span class="price">93 700 ₽</span>
+                </div>
+                <div class="product-item">
+                  <span class="model">15 Pro Max 256GB Blue 🇦🇪</span>
+                  <span class="price">90 500 ₽</span>
+                </div>
+                <div class="product-item">
+                  <span class="model">15 Pro Max 512GB White 🇦🇪</span>
+                  <span class="price">98 600 ₽</span>
+                </div>
+                <div class="product-item">
+                  <span class="model">15 Pro Max 1TB Black 🇦🇪</span>
+                  <span class="price">118 000 ₽</span>
+                </div>
+              </div>
+            </div>
+          </div>`,
+          block_type: "iphone15",
           position: 4,
         },
         {
-          title: "Последние поступления",
-          content: `<div class="products">
-            <div class="product-item">
-              <h4>iPhone 5S 16GB Space Gray РСТ</h4>
-              <p class="price">26 000 ₽</p>
-              <p class="original-price">Цена в магазине: 29 990 ₽</p>
-              <span class="status sold">Продан</span>
+          title: "MacBook",
+          content: `<div class="products-section">
+            <h3>💻 MacBook Air / MacBook Pro / iMac</h3>
+
+            <div class="product-info">
+              <p>⌨️ У всех ноутбуков английские буквы на клавиатуре</p>
+              <p>🔧 Решается гравировкой в Омске за 1000₽ (10 минут работы)</p>
             </div>
-            <div class="product-item">
-              <h4>iPhone 5 16GB Black (US)</h4>
-              <p class="price">20 000 ₽</p>
-              <p class="description">Американские, НЕ рефабришед, реально новые</p>
-              <span class="status available">В наличии</span>
-            </div>
-            <div class="product-item">
-              <h4>iPad Mini 4G 32GB РСТ</h4>
-              <p class="price">По запросу</p>
-              <span class="status sold">Продан</span>
+
+            <div class="products-grid">
+              <div class="product-category">
+                <h4>🖥 iMac</h4>
+                <div class="product-item">
+                  <span class="model">iMac 24" M3 8/512 Blue (MQRR3)</span>
+                  <span class="price">155 000 ₽</span>
+                </div>
+                <div class="product-item">
+                  <span class="model">iMac 24" M4 16/256 Silver (MD3H4)</span>
+                  <span class="price">165 000 ₽</span>
+                </div>
+              </div>
+
+              <div class="product-category">
+                <h4>💻 MacBook Air 13"</h4>
+                <div class="product-item">
+                  <span class="model">Air 13" M1 8/256 Gray (MGN63)</span>
+                  <span class="price">56 000 ₽</span>
+                </div>
+                <div class="product-item">
+                  <span class="model">Air 13" M3 8/256 Midnight (MRXV3)</span>
+                  <span class="price">78 000 ₽</span>
+                </div>
+                <div class="product-item">
+                  <span class="model">Air 13" M4 16/256 Silver (MW0W3)</span>
+                  <span class="price">86 000 ₽</span>
+                </div>
+                <div class="product-item">
+                  <span class="model">Air 13" M4 24/512 Sky Blue (MC6V4)</span>
+                  <span class="price">116 500 ₽</span>
+                </div>
+              </div>
+
+              <div class="product-category">
+                <h4>💻 MacBook Air 15"</h4>
+                <div class="product-item">
+                  <span class="model">Air 15" M3 8/256 Starlight (MRYR3)</span>
+                  <span class="price">82 000 ₽</span>
+                </div>
+                <div class="product-item">
+                  <span class="model">Air 15" M3 16/512 Midnight (MXD43)</span>
+                  <span class="price">117 500 ₽</span>
+                </div>
+                <div class="product-item">
+                  <span class="model">Air 15" M4 16/256 Silver (MW1G3)</span>
+                  <span class="price">101 500 ₽</span>
+                </div>
+              </div>
+
+              <div class="product-category">
+                <h4>💻 MacBook Pro</h4>
+                <div class="product-item">
+                  <span class="model">Pro 14" M3 8/1TB Gray (MTL83)</span>
+                  <span class="price">117 000 ₽</span>
+                </div>
+                <div class="product-item">
+                  <span class="model">Pro 16" M1 Max 32/1TB Gray (MK1A3)</span>
+                  <span class="price">180 000 ₽</span>
+                </div>
+              </div>
             </div>
           </div>`,
-          block_type: "products",
+          block_type: "macbook",
           position: 5,
         },
         {
-          title: "Контактная информация",
-          content: `<div class="contacts">
-            <h3>📞 Контакты</h3>
-            <p><strong>Магазин:</strong> StiNGer (работаем с 2007 года)</p>
-            <p><strong>Город:</strong> Омск</p>
-            <p><strong>Специализация:</strong> Новая техника Apple</p>
-            <p><strong>Форум:</strong> om7.com</p>
-            <p class="note">⚠️ Звоните для уточнения наличия и цен!</p>
+          title: "iPad и Apple Watch",
+          content: `<div class="products-section">
+            <h3>📱 iPad / Apple Watch / AirPods</h3>
+
+            <div class="products-grid">
+              <div class="product-category">
+                <h4>📂 iPad</h4>
+                <div class="product-item">
+                  <span class="model">iPad 10 256GB Blue Wi-Fi 🇺🇸</span>
+                  <span class="price">33 000 ₽</span>
+                </div>
+                <div class="product-item">
+                  <span class="model">iPad Air 11" M3 128GB Purple Wi-Fi 🇺🇸</span>
+                  <span class="price">48 000 ₽</span>
+                </div>
+                <div class="product-item">
+                  <span class="model">iPad Air 13" M3 128GB Blue Wi-Fi 🇺🇸</span>
+                  <span class="price">63 800 ₽</span>
+                </div>
+                <div class="product-item">
+                  <span class="model">iPad Pro 11" M4 256GB Silver Wi-Fi 🇺🇸</span>
+                  <span class="price">81 000 ₽</span>
+                </div>
+                <div class="product-item">
+                  <span class="model">iPad Pro 13" M4 256GB Black Wi-Fi 🇺🇸</span>
+                  <span class="price">98 000 ₽</span>
+                </div>
+              </div>
+
+              <div class="product-category">
+                <h4>⌚ Apple Watch</h4>
+                <div class="product-item">
+                  <span class="model">Apple Watch SE2 40mm Midnight (2024) 🇺🇸</span>
+                  <span class="price">16 900 ₽</span>
+                </div>
+                <div class="product-item">
+                  <span class="model">Apple Watch S10 42mm Jet Black 🇺🇸</span>
+                  <span class="price">28 300 ₽</span>
+                </div>
+                <div class="product-item">
+                  <span class="model">Apple Watch S10 46mm Rose Gold 🇺🇸</span>
+                  <span class="price">31 200 ₽</span>
+                </div>
+                <div class="product-item">
+                  <span class="model">Apple Watch Ultra 2 Black/Dark Green (2024) 🇺🇸</span>
+                  <span class="price">63 500 ₽</span>
+                </div>
+              </div>
+
+              <div class="product-category">
+                <h4>🎧 AirPods</h4>
+                <div class="product-item">
+                  <span class="model">AirPods 4</span>
+                  <span class="price">10 600 ₽</span>
+                </div>
+                <div class="product-item">
+                  <span class="model">AirPods 4 ANC</span>
+                  <span class="price">15 000 ₽</span>
+                </div>
+                <div class="product-item">
+                  <span class="model">AirPods Pro 2 USB-C</span>
+                  <span class="price">17 400 ₽</span>
+                </div>
+                <div class="product-item">
+                  <span class="model">AirPods Max USB-C Midnight</span>
+                  <span class="price">45 000 ₽</span>
+                </div>
+                <div class="product-item">
+                  <span class="model">Apple Pencil Pro</span>
+                  <span class="price">10 400 ₽</span>
+                </div>
+              </div>
+            </div>
           </div>`,
-          block_type: "contacts",
+          block_type: "ipad_watch",
           position: 6,
+        },
+        {
+          title: "Дополнительная информация",
+          content: `<div class="additional-info">
+            <h3>📋 Дополнительная информация</h3>
+
+            <div class="info-block">
+              <h4>📄 Полезные ссылки:</h4>
+              <ul>
+                <li>📖 Ответы на остальные вопросы</li>
+                <li>🔄 Про TRADE IN и скупку БУ</li>
+                <li>🤝 Про взаимоуважение и черный список</li>
+                <li>🛡️ Про гарантию на устройства</li>
+              </ul>
+            </div>
+
+            <div class="info-block">
+              <h4>⚠️ Важные условия:</h4>
+              <ul>
+                <li>💰 Цены постоянно меняются в течение дня от курса доллара</li>
+                <li>⏰ Точную цену уточняйте при заказе по телефону</li>
+                <li>🚚 Доставка в Омск 4-5 дней</li>
+                <li>📦 Возможны другие модели под заказ</li>
+                <li>💳 Для юридических лиц - безналичный расчет</li>
+              </ul>
+            </div>
+
+            <div class="info-block">
+              <h4>🌟 Дополнительная техника:</h4>
+              <p>Также в наличии продукция:</p>
+              <ul>
+                <li>🎮 Sony PlayStation 5</li>
+                <li>💨 Dyson (пылесосы, фены)</li>
+                <li>⌚ Garmin (спортивные часы)</li>
+                <li>📱 Samsung Galaxy</li>
+                <li>📱 Xiaomi / Redmi</li>
+                <li>🎮 Steam Deck</li>
+                <li>🎮 Xbox Series</li>
+              </ul>
+            </div>
+
+            <div class="signature">
+              <p><strong>С уважением, StiNGer</strong></p>
+              <p><em>Работаем с 2007 года!</em></p>
+            </div>
+          </div>`,
+          block_type: "additional_info",
+          position: 7,
         },
       ]
 

@@ -490,3 +490,244 @@ h3 {
 		margin-bottom: 16px;
 	}
 }
+
+/* Стили для продуктов и ценника */
+.products-section {
+	margin: 2rem 0;
+	padding: 1.5rem;
+	background: rgba(255, 255, 255, 0.95);
+	border-radius: 12px;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.product-info {
+	background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+	color: white;
+	padding: 1rem;
+	border-radius: 8px;
+	margin-bottom: 1.5rem;
+}
+
+.product-info p {
+	margin: 0.5rem 0;
+	font-weight: 500;
+}
+
+.country-info {
+	background: #f8f9fa;
+	padding: 1rem;
+	border-radius: 8px;
+	margin-bottom: 1.5rem;
+	border-left: 4px solid #007bff;
+}
+
+.country-info h4 {
+	margin-bottom: 0.8rem;
+	color: #495057;
+}
+
+.country-info p {
+	margin: 0.5rem 0;
+	line-height: 1.6;
+}
+
+.products-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+	gap: 1.5rem;
+}
+
+.product-category {
+	background: white;
+	border: 1px solid #e9ecef;
+	border-radius: 8px;
+	overflow: hidden;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.product-category h4 {
+	background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+	color: white;
+	margin: 0;
+	padding: 1rem;
+	font-size: 1.1rem;
+	text-align: center;
+}
+
+.product-item {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 0.8rem 1rem;
+	border-bottom: 1px solid #f1f3f4;
+	transition: background-color 0.2s ease;
+}
+
+.product-item:hover {
+	background-color: #f8f9fa;
+}
+
+.product-item:last-child {
+	border-bottom: none;
+}
+
+.product-item .model {
+	flex: 1;
+	font-weight: 500;
+	color: #495057;
+	font-size: 0.9rem;
+}
+
+.product-item .price {
+	font-weight: bold;
+	color: #28a745;
+	font-size: 1rem;
+	white-space: nowrap;
+	margin-left: 1rem;
+}
+
+.contact-block {
+	background: white;
+	border: 1px solid #e9ecef;
+	border-radius: 8px;
+	padding: 1.5rem;
+	margin-bottom: 1.5rem;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.contact-block h4 {
+	margin-bottom: 1rem;
+	color: #495057;
+	padding-bottom: 0.5rem;
+	border-bottom: 2px solid #007bff;
+}
+
+.contact-block p {
+	margin: 0.8rem 0;
+	line-height: 1.6;
+}
+
+.contact-block strong {
+	color: #007bff;
+	font-size: 1.1rem;
+}
+
+.warning {
+	background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+	color: white;
+	padding: 1rem;
+	border-radius: 8px;
+	margin-top: 1rem;
+}
+
+.warning p {
+	margin: 0;
+	font-weight: 500;
+}
+
+.notice {
+	background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+	color: white;
+	padding: 2rem;
+	border-radius: 12px;
+	text-align: center;
+	margin-bottom: 2rem;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.notice h3 {
+	margin-bottom: 1rem;
+	font-size: 1.5rem;
+}
+
+.notice p {
+	margin: 0.8rem 0;
+	line-height: 1.6;
+}
+
+.additional-info {
+	margin: 2rem 0;
+}
+
+.info-block {
+	background: white;
+	border: 1px solid #e9ecef;
+	border-radius: 8px;
+	padding: 1.5rem;
+	margin-bottom: 1.5rem;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.info-block h4 {
+	margin-bottom: 1rem;
+	color: #495057;
+	padding-bottom: 0.5rem;
+	border-bottom: 2px solid #007bff;
+}
+
+.info-block ul {
+	list-style: none;
+	padding: 0;
+}
+
+.info-block li {
+	padding: 0.5rem 0;
+	border-bottom: 1px solid #f1f3f4;
+	position: relative;
+	padding-left: 1.5rem;
+}
+
+.info-block li:before {
+	content: '•';
+	color: #007bff;
+	font-weight: bold;
+	position: absolute;
+	left: 0;
+}
+
+.signature {
+	background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+	color: white;
+	padding: 1.5rem;
+	border-radius: 8px;
+	text-align: center;
+	margin-top: 2rem;
+}
+
+.signature p {
+	margin: 0.5rem 0;
+}
+
+/* Адаптивность для мобильных устройств */
+@media (max-width: 768px) {
+	.products-grid {
+		grid-template-columns: 1fr;
+	}
+
+	.product-item {
+		flex-direction: column;
+		align-items: flex-start;
+		gap: 0.5rem;
+	}
+
+	.product-item .model {
+		margin-bottom: 0.5rem;
+	}
+
+	.product-item .price {
+		margin-left: 0;
+		font-size: 1.1rem;
+	}
+
+	.contact-block {
+		padding: 1rem;
+	}
+
+	.notice {
+		padding: 1.5rem;
+	}
+
+	.info-block {
+		padding: 1rem;
+	}
+}

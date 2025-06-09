@@ -336,11 +336,23 @@
 
 <!-- Модальное окно редактирования -->
 {#if showEditModal}
-  <div class="modal-overlay" onclick={closeEditModal} role="dialog" aria-modal="true">
+  <div
+    class="modal-overlay"
+    onclick={closeEditModal}
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="modal-title"
+    tabindex="-1"
+    onkeydown={(e) => {
+      if (e.key === 'Escape') {
+        closeEditModal();
+      }
+    }}
+  >
     <div class="modal" onclick={(e) => e.stopPropagation()} role="document">
       <div class="modal-header">
-        <h3 class="modal-title">✏️ Редактирование блока</h3>
-        <button class="modal-close" onclick={closeEditModal}>×</button>
+        <h3 id="modal-title" class="modal-title">✏️ Редактирование блока</h3>
+        <button class="modal-close" onclick={closeEditModal} aria-label="Закрыть модальное окно">×</button>
       </div>
 
       <form onsubmit={(e) => { e.preventDefault(); saveBlock(); }}>
