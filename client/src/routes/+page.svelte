@@ -596,6 +596,22 @@
     contentElements = [];
   };
 
+  const createNewBlockAtPosition = (position: number) => {
+    // Создаем новый блок для inline редактирования на конкретной позиции
+    editingBlockId = 0; // 0 означает новый блок
+    editForm.title = 'Новый блок';
+    editForm.content = '';
+    editForm.block_type = 'custom';
+    editForm.position = position;
+
+    // Очищаем элементы конструктора для нового блока
+    contentElements = [];
+  };
+
+  const createBlockAfterPosition = (afterPosition: number) => {
+    createNewBlockAtPosition(afterPosition + 1);
+  };
+
   const saveNewBlock = async () => {
     const token = localStorage.getItem('stiner_token');
     if (!token) {
@@ -707,8 +723,34 @@
       </div>
     {/if}
 
-    <!-- Контентные блоки -->
-    {#each contentBlocks as block (block.id)}
+        <!-- Контентные блоки -->
+    {#each contentBlocks as block, index (block.id)}
+            <!-- Кнопка создания блока в самом начале -->
+      {#if user && editMode && index === 0}
+        <div class="create-block-divider">
+          <button
+            onclick={() => createNewBlockAtPosition(1)}
+            class="create-block-between-btn"
+            title="Создать блок в начале"
+          >
+            ➕ Добавить блок в начале
+          </button>
+        </div>
+      {/if}
+
+      <!-- Кнопка создания блока между блоками (только для админов в режиме редактирования) -->
+      {#if user && editMode && index > 0}
+        <div class="create-block-divider">
+          <button
+            onclick={() => createBlockAfterPosition(contentBlocks[index - 1].position)}
+            class="create-block-between-btn"
+            title="Создать блок здесь"
+          >
+            ➕ Добавить блок здесь
+          </button>
+        </div>
+      {/if}
+
       <div class="card fade-in">
         <div class="editable-block {editMode ? 'edit-mode' : ''}">
           {#if editingBlockId === block.id}
@@ -1121,6 +1163,19 @@
   {/if}
 </div>
 
+<!-- Плавающая кнопка режима редактирования -->
+{#if isAuthenticated && user?.role === 'admin'}
+  <div class="floating-edit-toggle">
+    <button
+      class="floating-edit-btn {editMode ? 'active' : ''}"
+      onclick={toggleEditMode}
+      title={editMode ? 'Выйти из редактирования' : 'Режим редактирования'}
+    >
+      {editMode ? '❌' : '✏️'}
+    </button>
+  </div>
+{/if}
+
 <!-- Модальное окно удалено - используется inline редактирование -->
 
 <style>
@@ -1361,5 +1416,107 @@
     margin-bottom: 8px;
     color: #374151;
     font-size: 14px;
+  }
+
+  /* Кнопки создания блоков между существующими */
+  .create-block-divider {
+    display: flex;
+    justify-content: center;
+    margin: 1rem 0;
+    position: relative;
+  }
+
+  .create-block-divider::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #e2e8f0, transparent);
+    z-index: 1;
+  }
+
+  .create-block-between-btn {
+    background: linear-gradient(135deg, #48bb78, #38a169);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+    z-index: 2;
+    white-space: nowrap;
+  }
+
+  .create-block-between-btn:hover {
+    background: linear-gradient(135deg, #38a169, #2f855a);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  }
+
+  .create-block-between-btn:active {
+    transform: translateY(0);
+  }
+
+  /* Плавающая кнопка режима редактирования */
+  .floating-edit-toggle {
+    position: sticky;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    display: flex;
+    justify-content: flex-end;
+    pointer-events: none;
+    margin-bottom: -60px; /* Компенсируем высоту кнопки */
+  }
+
+  .floating-edit-btn {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: none;
+    background: linear-gradient(135deg, #4299e1, #3182ce);
+    color: white;
+    font-size: 1.25rem;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+    pointer-events: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .floating-edit-btn:hover {
+    background: linear-gradient(135deg, #3182ce, #2c5282);
+    transform: scale(1.1);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+  }
+
+  .floating-edit-btn.active {
+    background: linear-gradient(135deg, #e53e3e, #c53030);
+  }
+
+  .floating-edit-btn.active:hover {
+    background: linear-gradient(135deg, #c53030, #9c2626);
+  }
+
+  /* Адаптивность для плавающей кнопки */
+  @media (max-width: 768px) {
+    .floating-edit-toggle {
+      top: 15px;
+      right: 15px;
+    }
+
+    .floating-edit-btn {
+      width: 45px;
+      height: 45px;
+      font-size: 1.1rem;
+    }
   }
 </style>

@@ -1,10 +1,10 @@
-import express from 'express'
-import cors from 'cors'
-import helmet from 'helmet'
-import rateLimit from 'express-rate-limit'
-import { Database } from './database.js'
-import { authRouter } from './routes/auth.js'
-import { contentRouter } from './routes/content.js'
+import cors from "cors"
+import express from "express"
+import rateLimit from "express-rate-limit"
+import helmet from "helmet"
+import { Database } from "./database.js"
+import { authRouter } from "./routes/auth.js"
+import { contentRouter } from "./routes/content.js"
 
 const app = express()
 const PORT = process.env.PORT || 3001
@@ -16,8 +16,13 @@ const db = new Database()
 app.use(helmet())
 app.use(
   cors({
-    origin: ['http://localhost:5173', 'http://localhost:3000'],
-    credentials: true
+    origin: [
+      "http://localhost:5173",
+      "http://localhost:5174",
+      "http://localhost:5175",
+      "http://localhost:3000",
+    ],
+    credentials: true,
   })
 )
 
@@ -25,25 +30,25 @@ app.use(
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 минут
   max: 100, // максимум 100 запросов с одного IP за 15 минут
-  message: 'Слишком много запросов с этого IP, попробуйте позже.'
+  message: "Слишком много запросов с этого IP, попробуйте позже.",
 })
 app.use(limiter)
 
 app.use(express.json())
 
 // Подключаем маршруты
-app.use('/api/auth', authRouter)
-app.use('/api/content', contentRouter)
+app.use("/api/auth", authRouter)
+app.use("/api/content", contentRouter)
 
 // Базовый маршрут
-app.get('/api/health', (req, res) => {
-  res.json({ status: 'OK', message: 'Сервер StiNGer Forum работает!' })
+app.get("/api/health", (req, res) => {
+  res.json({ status: "OK", message: "Сервер StiNGer Forum работает!" })
 })
 
 // Обработка ошибок
 app.use((err, req, res, next) => {
   console.error(err.stack)
-  res.status(500).json({ error: 'Что-то пошло не так!' })
+  res.status(500).json({ error: "Что-то пошло не так!" })
 })
 
 // Запуск сервера
