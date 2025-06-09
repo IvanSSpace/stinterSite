@@ -29,6 +29,9 @@
 			"svelte": "./dist/index.js"
 		}
 	},
+	"dependencies": {
+		"@fontsource/inter": "^5.0.16"
+	},
 	"peerDependencies": {
 		"svelte": "^5.0.0"
 	},
