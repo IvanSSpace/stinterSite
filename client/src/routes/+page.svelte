@@ -219,18 +219,148 @@
   // Парсинг HTML в элементы конструктора
   function parseContentToElements(htmlContent: string) {
     contentElements = [];
-    // Простой парсер для существующего контента
-    // В будущем можно улучшить для более сложных случаев
-    if (htmlContent.includes('contacts-main')) {
-      // Пример парсинга контактов
+
+    if (!htmlContent.trim()) {
+      return;
+    }
+
+    // Создаем временный DOM элемент для парсинга
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = htmlContent;
+
+    // Рекурсивно обходим все элементы
+    parseElement(tempDiv);
+  }
+
+  function parseElement(element: Element) {
+    for (const child of element.children) {
+      if (child.classList.contains('contacts-main')) {
+        // Парсим блок контактов
+        parseContactsBlock(child);
+      } else if (child.tagName.match(/^H[2-4]$/)) {
+        // Парсим заголовки
+        parseHeading(child);
+      } else if (child.tagName === 'P') {
+        // Парсим абзацы
+        parseParagraph(child);
+      } else if (child.classList.contains('contact-block')) {
+        // Парсим отдельный контакт
+        parseContact(child);
+      } else if (child.classList.contains('warning')) {
+        // Парсим предупреждение
+        parseWarning(child);
+      } else if (child.classList.contains('product-item')) {
+        // Парсим товар
+        parseProduct(child);
+      } else {
+        // Рекурсивно обрабатываем дочерние элементы
+        parseElement(child);
+      }
+    }
+  }
+
+  function parseContactsBlock(element: Element) {
+    // Ищем заголовок блока контактов
+    const heading = element.querySelector('h3');
+    if (heading) {
+      const text = heading.textContent || '';
+      const emoji = text.match(/^([\u{1F600}-\u{1F64F}]|[\u{1F300}-\u{1F5FF}]|[\u{1F680}-\u{1F6FF}]|[\u{1F1E0}-\u{1F1FF}]|[\u{2600}-\u{26FF}]|[\u{2700}-\u{27BF}])/u);
+
       contentElements.push({
         id: generateId(),
         type: 'heading',
         level: 'h3',
-        text: 'Контактная информация',
-        emoji: '📞'
+        text: text.replace(/^[\u{1F600}-\u{1F64F}][\u{1F300}-\u{1F5FF}][\u{1F680}-\u{1F6FF}][\u{1F1E0}-\u{1F1FF}][\u{2600}-\u{26FF}][\u{2700}-\u{27BF}]\s*/u, ''),
+        emoji: emoji ? emoji[0] : '📞'
       });
     }
+
+    // Парсим контакты внутри блока
+    const contacts = element.querySelectorAll('.contact-block');
+    contacts.forEach(contact => parseContact(contact));
+
+    // Парсим предупреждения внутри блока
+    const warnings = element.querySelectorAll('.warning');
+    warnings.forEach(warning => parseWarning(warning));
+  }
+
+  function parseHeading(element: Element) {
+    const text = element.textContent || '';
+    const level = element.tagName.toLowerCase() as 'h2' | 'h3' | 'h4';
+    const emoji = text.match(/^([\u{1F600}-\u{1F64F}]|[\u{1F300}-\u{1F5FF}]|[\u{1F680}-\u{1F6FF}]|[\u{1F1E0}-\u{1F1FF}]|[\u{2600}-\u{26FF}]|[\u{2700}-\u{27BF}])/u);
+
+    contentElements.push({
+      id: generateId(),
+      type: 'heading',
+      level: level,
+      text: text.replace(/^[\u{1F600}-\u{1F64F}][\u{1F300}-\u{1F5FF}][\u{1F680}-\u{1F6FF}][\u{1F1E0}-\u{1F1FF}][\u{2600}-\u{26FF}][\u{2700}-\u{27BF}]\s*/u, ''),
+      emoji: emoji ? emoji[0] : ''
+    });
+  }
+
+  function parseParagraph(element: Element) {
+    const text = element.textContent || '';
+    // Проверяем, что это не специальный блок (телефон, время, цена и т.д.)
+    const isSpecialBlock = text.match(/^(Время:|Цена:|Регион:|⚠️)/i);
+    const isBold = element.querySelector('strong') !== null || element.tagName === 'STRONG';
+
+    if (text.trim() && !isSpecialBlock) {
+      contentElements.push({
+        id: generateId(),
+        type: 'paragraph',
+        text: text,
+        bold: isBold
+      });
+    }
+  }
+
+  function parseContact(element: Element) {
+    const title = element.querySelector('h4')?.textContent || '';
+    const phoneMatch = element.innerHTML.match(/<strong>([+]?[\d\s-]+)<\/strong>/);
+    const timeMatch = element.innerHTML.match(/<strong>Время:<\/strong>\s*([^<]+)/);
+
+    const paragraphs = Array.from(element.querySelectorAll('p'))
+      .map(p => p.textContent || '')
+      .filter(text => !text.includes('Время:') && (!phoneMatch || !text.includes(phoneMatch[1])));
+
+    contentElements.push({
+      id: generateId(),
+      type: 'contact',
+      title: title,
+      phone: phoneMatch ? phoneMatch[1] : '',
+      time: timeMatch ? timeMatch[1].trim() : '',
+      description: paragraphs.join('\n')
+    });
+  }
+
+  function parseWarning(element: Element) {
+    const text = element.textContent || '';
+    const cleanText = text.replace(/^⚠️\s*ВАЖНО:\s*/i, '');
+
+    contentElements.push({
+      id: generateId(),
+      type: 'warning',
+      text: cleanText
+    });
+  }
+
+  function parseProduct(element: Element) {
+    const name = element.querySelector('h4')?.textContent || '';
+    const priceMatch = element.innerHTML.match(/<strong>Цена:<\/strong>\s*([^<]+)/);
+    const regionMatch = element.innerHTML.match(/<strong>Регион:<\/strong>\s*([^<]+)/);
+
+    const paragraphs = Array.from(element.querySelectorAll('p'))
+      .map(p => p.textContent || '')
+      .filter(text => !text.includes('Цена:') && !text.includes('Регион:'));
+
+    contentElements.push({
+      id: generateId(),
+      type: 'product',
+      name: name,
+      price: priceMatch ? priceMatch[1].trim() : '',
+      region: regionMatch ? regionMatch[1].trim() : '',
+      description: paragraphs.join('\n')
+    });
   }
 
   // Генерация уникального ID
@@ -390,7 +520,7 @@
     }
   };
 
-  // Генерация HTML из элементов конструктора
+    // Генерация HTML из элементов конструктора
   function generateHTMLFromElements(): string {
     if (contentElements.length === 0) {
       return editForm.content; // Возвращаем исходное содержимое если элементов нет
@@ -398,9 +528,16 @@
 
     let html = '';
     const hasContacts = contentElements.some(el => el.type === 'contact');
+    const hasProducts = contentElements.some(el => el.type === 'product');
 
+    // Если есть контакты, оборачиваем в contacts-main
     if (hasContacts) {
       html += '<div class="contacts-main">\n';
+    }
+
+    // Если есть товары, добавляем класс products для стилизации
+    if (hasProducts && !hasContacts) {
+      html += '<div class="products">\n';
     }
 
     contentElements.forEach(element => {
@@ -408,6 +545,8 @@
     });
 
     if (hasContacts) {
+      html += '</div>';
+    } else if (hasProducts) {
       html += '</div>';
     }
 
@@ -982,5 +1121,22 @@
   .product-editor {
     display: grid;
     gap: 8px;
+  }
+
+  /* Стили для основных контентных блоков */
+  .content :global(.contacts-main) {
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    padding: 2rem;
+    border-radius: 15px;
+    margin: 1.5rem 0;
+    border: 1px solid #cbd5e1;
+  }
+
+  .content :global(.products) {
+    background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+    padding: 2rem;
+    border-radius: 15px;
+    margin: 1.5rem 0;
+    border: 1px solid #0891b2;
   }
 </style>
