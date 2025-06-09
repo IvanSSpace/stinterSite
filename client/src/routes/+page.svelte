@@ -35,8 +35,8 @@
   let editMode = $state(false);
 
   // Состояние модальных окон
-  let showEditModal = $state(false);
-  let editingBlock: ContentBlock | null = $state(null);
+  // Inline редактирование
+  let editingBlockId = $state<number | null>(null);
   let editForm = $state({
     title: '',
     content: '',
@@ -202,9 +202,9 @@
     return num.toLocaleString('ru-RU');
   };
 
-  // Функции редактирования
-  const openEditModal = (block: ContentBlock) => {
-    editingBlock = block;
+  // Функции inline редактирования
+  const startEditing = (block: ContentBlock) => {
+    editingBlockId = block.id;
     editForm.title = block.title;
     editForm.content = block.content;
     editForm.block_type = block.block_type;
@@ -212,8 +212,17 @@
 
     // Парсим HTML контент в элементы конструктора
     parseContentToElements(block.content);
+  };
 
-    showEditModal = true;
+  const cancelEditing = () => {
+    editingBlockId = null;
+    editForm = {
+      title: '',
+      content: '',
+      block_type: '',
+      position: 0
+    };
+    contentElements = [];
   };
 
   // Парсинг HTML в элементы конструктора
@@ -468,19 +477,10 @@
     }
   }
 
-  const closeEditModal = () => {
-    showEditModal = false;
-    editingBlock = null;
-    editForm = {
-      title: '',
-      content: '',
-      block_type: '',
-      position: 0
-    };
-  };
+  // Функция удалена - заменена на cancelEditing
 
   const saveBlock = async () => {
-    if (!editingBlock) return;
+    if (!editingBlockId) return;
 
     const token = localStorage.getItem('stiner_token');
     if (!token) {
@@ -492,7 +492,7 @@
       // Генерируем HTML из элементов конструктора
       const generatedContent = generateHTMLFromElements();
 
-      const response = await fetch(`http://localhost:3001/api/content/blocks/${editingBlock.id}`, {
+      const response = await fetch(`http://localhost:3001/api/content/blocks/${editingBlockId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -509,7 +509,7 @@
 
       if (response.ok) {
         await loadContent();
-        closeEditModal();
+        cancelEditing();
       } else {
         const data = await response.json();
         error = data.error || 'Ошибка сохранения';
@@ -585,28 +585,15 @@
   };
 
   const createNewBlock = () => {
-    // Создаем новый блок с пустыми элементами конструктора
-    const newBlock: ContentBlock = {
-      id: 0,
-      title: 'Новый блок',
-      content: '',
-      block_type: 'custom',
-      position: contentBlocks.length + 1,
-      is_active: 1,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString()
-    };
-
-    editingBlock = newBlock;
-    editForm.title = newBlock.title;
-    editForm.content = newBlock.content;
-    editForm.block_type = newBlock.block_type;
-    editForm.position = newBlock.position;
+    // Создаем новый блок для inline редактирования
+    editingBlockId = 0; // 0 означает новый блок
+    editForm.title = 'Новый блок';
+    editForm.content = '';
+    editForm.block_type = 'custom';
+    editForm.position = contentBlocks.length + 1;
 
     // Очищаем элементы конструктора для нового блока
     contentElements = [];
-
-    showEditModal = true;
   };
 
   const saveNewBlock = async () => {
@@ -636,7 +623,7 @@
 
       if (response.ok) {
         await loadContent();
-        closeEditModal();
+        cancelEditing();
       } else {
         const data = await response.json();
         error = data.error || 'Ошибка создания';
@@ -724,30 +711,404 @@
     {#each contentBlocks as block (block.id)}
       <div class="card fade-in">
         <div class="editable-block {editMode ? 'edit-mode' : ''}">
-          {#if editMode && isAuthenticated && user?.role === 'admin'}
-            <div class="edit-controls">
-              <button class="edit-btn edit" onclick={() => openEditModal(block)}>✏️ Редактировать</button>
-              <button class="edit-btn delete" onclick={() => deleteBlock(block.id)}>🗑️ Удалить</button>
+          {#if editingBlockId === block.id}
+            <!-- Inline редактирование -->
+            <div class="inline-editor">
+              <div class="edit-header">
+                <h3>📝 Редактирование блока</h3>
+                <div class="edit-actions">
+                  <button class="btn btn-primary" onclick={saveBlock}>
+                    💾 Сохранить
+                  </button>
+                  <button class="btn btn-secondary" onclick={cancelEditing}>
+                    ❌ Отмена
+                  </button>
+                </div>
+              </div>
+
+              <!-- Поля формы -->
+              <div class="form-group">
+                <label class="form-label">Название блока:</label>
+                <input
+                  class="form-input"
+                  type="text"
+                  bind:value={editForm.title}
+                  placeholder="Введите название блока"
+                />
+              </div>
+
+              <!-- Визуальный конструктор -->
+              <div class="content-builder">
+                <div class="builder-toolbar">
+                  <button class="builder-btn" onclick={() => addContentBlock('heading')}>
+                    📝 Заголовок
+                  </button>
+                  <button class="builder-btn" onclick={() => addContentBlock('paragraph')}>
+                    📄 Абзац
+                  </button>
+                  <button class="builder-btn" onclick={() => addContentBlock('contact')}>
+                    📞 Контакт
+                  </button>
+                  <button class="builder-btn" onclick={() => addContentBlock('warning')}>
+                    ⚠️ Предупреждение
+                  </button>
+                  <button class="builder-btn" onclick={() => addContentBlock('product')}>
+                    📱 Товар
+                  </button>
+                </div>
+
+                <div class="builder-content">
+                  {#if contentElements.length === 0}
+                    <div class="empty-builder">
+                      <p>Нет элементов. Добавьте элементы с помощью кнопок выше.</p>
+                    </div>
+                  {:else}
+                    {#each contentElements as element, index (element.id)}
+                      <div class="builder-element">
+                        <div class="element-controls">
+                          {#if index > 0}
+                            <button class="control-btn move-up" onclick={() => moveElement(index, 'up')}>
+                              ↑
+                            </button>
+                          {/if}
+                          {#if index < contentElements.length - 1}
+                            <button class="control-btn move-down" onclick={() => moveElement(index, 'down')}>
+                              ↓
+                            </button>
+                          {/if}
+                          <button class="control-btn delete" onclick={() => removeElement(index)}>
+                            🗑️
+                          </button>
+                        </div>
+
+                        <div class="element-editor">
+                          {#if element.type === 'heading'}
+                            <div style="display: flex; gap: 8px; align-items: center;">
+                              <input
+                                class="form-input emoji-input"
+                                type="text"
+                                bind:value={element.emoji}
+                                placeholder="🎯"
+                                maxlength="2"
+                              />
+                              <select class="form-select" bind:value={element.level}>
+                                <option value="h2">H2 - Большой заголовок</option>
+                                <option value="h3">H3 - Средний заголовок</option>
+                                <option value="h4">H4 - Маленький заголовок</option>
+                              </select>
+                            </div>
+                            <input
+                              class="form-input"
+                              type="text"
+                              bind:value={element.text}
+                              placeholder="Текст заголовка"
+                            />
+                          {:else if element.type === 'paragraph'}
+                            <label class="checkbox-label">
+                              <input type="checkbox" bind:checked={element.bold} />
+                              Жирный текст
+                            </label>
+                            <textarea
+                              class="form-textarea"
+                              bind:value={element.text}
+                              placeholder="Текст абзаца"
+                              rows="3"
+                            ></textarea>
+                          {:else if element.type === 'contact'}
+                            <div class="contact-editor">
+                              <input
+                                class="form-input"
+                                type="text"
+                                bind:value={element.title}
+                                placeholder="Название контакта"
+                              />
+                              <input
+                                class="form-input"
+                                type="text"
+                                bind:value={element.phone}
+                                placeholder="Номер телефона"
+                              />
+                              <input
+                                class="form-input"
+                                type="text"
+                                bind:value={element.time}
+                                placeholder="Время работы"
+                              />
+                              <textarea
+                                class="form-textarea"
+                                bind:value={element.description}
+                                placeholder="Описание"
+                                rows="2"
+                              ></textarea>
+                            </div>
+                          {:else if element.type === 'warning'}
+                            <textarea
+                              class="form-textarea"
+                              bind:value={element.text}
+                              placeholder="Текст предупреждения"
+                              rows="2"
+                            ></textarea>
+                          {:else if element.type === 'product'}
+                            <div class="product-editor">
+                              <input
+                                class="form-input"
+                                type="text"
+                                bind:value={element.name}
+                                placeholder="Название товара"
+                              />
+                              <input
+                                class="form-input"
+                                type="text"
+                                bind:value={element.price}
+                                placeholder="Цена"
+                              />
+                              <select class="form-select" bind:value={element.region}>
+                                <option value="">Выберите страну</option>
+                                {#each countries as country}
+                                  {#if country.disabled}
+                                    <option value={country.value} disabled>{country.label}</option>
+                                  {:else}
+                                    <option value={country.value}>{country.label}</option>
+                                  {/if}
+                                {/each}
+                              </select>
+                              <textarea
+                                class="form-textarea"
+                                bind:value={element.description}
+                                placeholder="Описание товара"
+                                rows="2"
+                              ></textarea>
+                            </div>
+                          {/if}
+                        </div>
+
+                        <div class="element-preview">
+                          <div class="preview-label">Предварительный просмотр:</div>
+                          <div class="preview-content">
+                            {@html renderElement(element)}
+                          </div>
+                        </div>
+                      </div>
+                    {/each}
+                  {/if}
+                </div>
+              </div>
+            </div>
+          {:else}
+            <!-- Обычное отображение -->
+            {#if editMode && isAuthenticated && user?.role === 'admin'}
+              <div class="edit-controls">
+                <button class="edit-btn edit" onclick={() => startEditing(block)}>✏️ Редактировать</button>
+                <button class="edit-btn delete" onclick={() => deleteBlock(block.id)}>🗑️ Удалить</button>
+              </div>
+            {/if}
+
+            <h2>{block.title}</h2>
+            <div class="content">
+              {@html block.content}
             </div>
           {/if}
-
-          <h2>{block.title}</h2>
-          <div class="content">
-            {@html block.content}
-          </div>
         </div>
       </div>
     {/each}
 
     <!-- Кнопка добавления нового блока для админов -->
     {#if editMode && isAuthenticated && user?.role === 'admin'}
-      <div class="card fade-in">
-        <div style="text-align: center; padding: 2rem;">
-          <button class="btn btn-primary" onclick={createNewBlock}>
-            ➕ Добавить новый блок
-          </button>
+      {#if editingBlockId === 0}
+        <!-- Новый блок в режиме редактирования -->
+        <div class="card fade-in">
+          <div class="inline-editor">
+            <div class="edit-header">
+              <h3>➕ Создание нового блока</h3>
+              <div class="edit-actions">
+                <button class="btn btn-primary" onclick={saveNewBlock}>
+                  💾 Создать
+                </button>
+                <button class="btn btn-secondary" onclick={cancelEditing}>
+                  ❌ Отмена
+                </button>
+              </div>
+            </div>
+
+            <!-- Поля формы -->
+            <div class="form-group">
+              <label class="form-label">Название блока:</label>
+              <input
+                class="form-input"
+                type="text"
+                bind:value={editForm.title}
+                placeholder="Введите название блока"
+              />
+            </div>
+
+            <!-- Визуальный конструктор -->
+            <div class="content-builder">
+              <div class="builder-toolbar">
+                <button class="builder-btn" onclick={() => addContentBlock('heading')}>
+                  📝 Заголовок
+                </button>
+                <button class="builder-btn" onclick={() => addContentBlock('paragraph')}>
+                  📄 Абзац
+                </button>
+                <button class="builder-btn" onclick={() => addContentBlock('contact')}>
+                  📞 Контакт
+                </button>
+                <button class="builder-btn" onclick={() => addContentBlock('warning')}>
+                  ⚠️ Предупреждение
+                </button>
+                <button class="builder-btn" onclick={() => addContentBlock('product')}>
+                  📱 Товар
+                </button>
+              </div>
+
+              <div class="builder-content">
+                {#if contentElements.length === 0}
+                  <div class="empty-builder">
+                    <p>Нет элементов. Добавьте элементы с помощью кнопок выше.</p>
+                  </div>
+                {:else}
+                  {#each contentElements as element, index (element.id)}
+                    <div class="builder-element">
+                      <div class="element-controls">
+                        {#if index > 0}
+                          <button class="control-btn move-up" onclick={() => moveElement(index, 'up')}>
+                            ↑
+                          </button>
+                        {/if}
+                        {#if index < contentElements.length - 1}
+                          <button class="control-btn move-down" onclick={() => moveElement(index, 'down')}>
+                            ↓
+                          </button>
+                        {/if}
+                        <button class="control-btn delete" onclick={() => removeElement(index)}>
+                          🗑️
+                        </button>
+                      </div>
+
+                      <div class="element-editor">
+                        {#if element.type === 'heading'}
+                          <div style="display: flex; gap: 8px; align-items: center;">
+                            <input
+                              class="form-input emoji-input"
+                              type="text"
+                              bind:value={element.emoji}
+                              placeholder="🎯"
+                              maxlength="2"
+                            />
+                            <select class="form-select" bind:value={element.level}>
+                              <option value="h2">H2 - Большой заголовок</option>
+                              <option value="h3">H3 - Средний заголовок</option>
+                              <option value="h4">H4 - Маленький заголовок</option>
+                            </select>
+                          </div>
+                          <input
+                            class="form-input"
+                            type="text"
+                            bind:value={element.text}
+                            placeholder="Текст заголовка"
+                          />
+                        {:else if element.type === 'paragraph'}
+                          <label class="checkbox-label">
+                            <input type="checkbox" bind:checked={element.bold} />
+                            Жирный текст
+                          </label>
+                          <textarea
+                            class="form-textarea"
+                            bind:value={element.text}
+                            placeholder="Текст абзаца"
+                            rows="3"
+                          ></textarea>
+                        {:else if element.type === 'contact'}
+                          <div class="contact-editor">
+                            <input
+                              class="form-input"
+                              type="text"
+                              bind:value={element.title}
+                              placeholder="Название контакта"
+                            />
+                            <input
+                              class="form-input"
+                              type="text"
+                              bind:value={element.phone}
+                              placeholder="Номер телефона"
+                            />
+                            <input
+                              class="form-input"
+                              type="text"
+                              bind:value={element.time}
+                              placeholder="Время работы"
+                            />
+                            <textarea
+                              class="form-textarea"
+                              bind:value={element.description}
+                              placeholder="Описание"
+                              rows="2"
+                            ></textarea>
+                          </div>
+                        {:else if element.type === 'warning'}
+                          <textarea
+                            class="form-textarea"
+                            bind:value={element.text}
+                            placeholder="Текст предупреждения"
+                            rows="2"
+                          ></textarea>
+                        {:else if element.type === 'product'}
+                          <div class="product-editor">
+                            <input
+                              class="form-input"
+                              type="text"
+                              bind:value={element.name}
+                              placeholder="Название товара"
+                            />
+                            <input
+                              class="form-input"
+                              type="text"
+                              bind:value={element.price}
+                              placeholder="Цена"
+                            />
+                            <select class="form-select" bind:value={element.region}>
+                              <option value="">Выберите страну</option>
+                              {#each countries as country}
+                                {#if country.disabled}
+                                  <option value={country.value} disabled>{country.label}</option>
+                                {:else}
+                                  <option value={country.value}>{country.label}</option>
+                                {/if}
+                              {/each}
+                            </select>
+                            <textarea
+                              class="form-textarea"
+                              bind:value={element.description}
+                              placeholder="Описание товара"
+                              rows="2"
+                            ></textarea>
+                          </div>
+                        {/if}
+                      </div>
+
+                      <div class="element-preview">
+                        <div class="preview-label">Предварительный просмотр:</div>
+                        <div class="preview-content">
+                          {@html renderElement(element)}
+                        </div>
+                      </div>
+                    </div>
+                  {/each}
+                {/if}
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
+      {:else}
+        <!-- Кнопка добавления -->
+        <div class="card fade-in">
+          <div style="text-align: center; padding: 2rem;">
+            <button class="btn btn-primary" onclick={createNewBlock}>
+              ➕ Добавить новый блок
+            </button>
+          </div>
+        </div>
+      {/if}
     {/if}
 
     <!-- Пустое состояние -->
@@ -760,181 +1121,7 @@
   {/if}
 </div>
 
-<!-- Модальное окно редактирования -->
-{#if showEditModal}
-  <div
-    class="modal-overlay"
-    onclick={closeEditModal}
-    role="dialog"
-    aria-modal="true"
-    aria-labelledby="modal-title"
-    tabindex="0"
-    onkeydown={(e) => {
-      if (e.key === 'Escape') {
-        closeEditModal();
-      }
-    }}
-  >
-    <div
-      class="modal"
-      onclick={(e) => e.stopPropagation()}
-      onkeydown={(e) => {
-        if (e.key === 'Escape') {
-          closeEditModal();
-        }
-      }}
-      role="document"
-    >
-      <div class="modal-header">
-        <h3 id="modal-title" class="modal-title">✏️ Редактирование блока</h3>
-        <button class="modal-close" onclick={closeEditModal} aria-label="Закрыть модальное окно">×</button>
-      </div>
-
-      <form onsubmit={(e) => {
-        e.preventDefault();
-        if (editingBlock?.id === 0) {
-          saveNewBlock();
-        } else {
-          saveBlock();
-        }
-      }}>
-        <div class="form-group">
-          <label for="edit-title" class="form-label">Заголовок:</label>
-          <input
-            type="text"
-            id="edit-title"
-            class="form-input"
-            bind:value={editForm.title}
-            required
-          />
-        </div>
-
-        <div class="form-group">
-          <label class="form-label">Содержимое:</label>
-          <div class="content-builder">
-            <div class="builder-toolbar">
-              <button type="button" class="builder-btn" onclick={() => addContentBlock('heading')}>
-                📝 Заголовок
-              </button>
-              <button type="button" class="builder-btn" onclick={() => addContentBlock('paragraph')}>
-                📄 Абзац
-              </button>
-              <button type="button" class="builder-btn" onclick={() => addContentBlock('contact')}>
-                📞 Контакт
-              </button>
-              <button type="button" class="builder-btn" onclick={() => addContentBlock('warning')}>
-                ⚠️ Предупреждение
-              </button>
-              <button type="button" class="builder-btn" onclick={() => addContentBlock('product')}>
-                📱 Товар
-              </button>
-            </div>
-
-            <div class="builder-content">
-              {#each contentElements as element, index (element.id)}
-                <div class="builder-element">
-                  <div class="element-controls">
-                    <button type="button" class="control-btn move-up" onclick={() => moveElement(index, 'up')}>↑</button>
-                    <button type="button" class="control-btn move-down" onclick={() => moveElement(index, 'down')}>↓</button>
-                    <button type="button" class="control-btn delete" onclick={() => removeElement(index)}>🗑️</button>
-                  </div>
-
-                  {#if element.type === 'heading'}
-                    <div class="element-editor">
-                      <select bind:value={element.level} class="form-select">
-                        <option value="h2">Заголовок 2</option>
-                        <option value="h3">Заголовок 3</option>
-                        <option value="h4">Заголовок 4</option>
-                      </select>
-                      <input type="text" bind:value={element.text} placeholder="Введите заголовок" class="form-input" />
-                      <input type="text" bind:value={element.emoji} placeholder="Эмодзи (опционально)" class="form-input emoji-input" />
-                    </div>
-                  {:else if element.type === 'paragraph'}
-                    <div class="element-editor">
-                      <textarea bind:value={element.text} placeholder="Введите текст" class="form-textarea" rows="3"></textarea>
-                      <label class="checkbox-label">
-                        <input type="checkbox" bind:checked={element.bold} />
-                        Жирный текст
-                      </label>
-                    </div>
-                  {:else if element.type === 'contact'}
-                    <div class="element-editor contact-editor">
-                      <input type="text" bind:value={element.title} placeholder="Название контакта" class="form-input" />
-                      <input type="text" bind:value={element.phone} placeholder="Номер телефона" class="form-input" />
-                      <input type="text" bind:value={element.time} placeholder="Время работы" class="form-input" />
-                      <textarea bind:value={element.description} placeholder="Дополнительная информация" class="form-textarea" rows="2"></textarea>
-                    </div>
-                  {:else if element.type === 'warning'}
-                    <div class="element-editor">
-                      <textarea bind:value={element.text} placeholder="Текст предупреждения" class="form-textarea" rows="2"></textarea>
-                    </div>
-                  {:else if element.type === 'product'}
-                    <div class="element-editor product-editor">
-                      <input type="text" bind:value={element.name} placeholder="Название товара" class="form-input" />
-                      <input type="text" bind:value={element.price} placeholder="Цена" class="form-input" />
-                      <select bind:value={element.region} class="form-select">
-                        <option value="">Выберите страну/регион</option>
-                        {#each countries as country}
-                          <option value={country.value} disabled={country.disabled}>{country.label}</option>
-                        {/each}
-                      </select>
-                      <textarea bind:value={element.description} placeholder="Описание" class="form-textarea" rows="2"></textarea>
-                    </div>
-                  {/if}
-
-                  <div class="element-preview">
-                    <strong>Предварительный просмотр:</strong>
-                    <div class="preview-content">
-                      {@html renderElement(element)}
-                    </div>
-                  </div>
-                </div>
-              {/each}
-
-              {#if contentElements.length === 0}
-                <div class="empty-builder">
-                  <p>Выберите тип блока выше для начала создания контента</p>
-                </div>
-              {/if}
-            </div>
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label for="edit-type" class="form-label">Тип блока:</label>
-          <input
-            type="text"
-            id="edit-type"
-            class="form-input"
-            bind:value={editForm.block_type}
-            required
-          />
-        </div>
-
-        <div class="form-group">
-          <label for="edit-position" class="form-label">Позиция:</label>
-          <input
-            type="number"
-            id="edit-position"
-            class="form-input"
-            bind:value={editForm.position}
-            min="0"
-            required
-          />
-        </div>
-
-        <div style="display: flex; gap: 12px; justify-content: flex-end; margin-top: 24px;">
-          <button type="button" class="btn btn-secondary" onclick={closeEditModal}>
-            Отмена
-          </button>
-          <button type="submit" class="btn btn-primary">
-            💾 {editingBlock?.id === 0 ? 'Создать' : 'Сохранить'}
-          </button>
-        </div>
-      </form>
-    </div>
-  </div>
-{/if}
+<!-- Модальное окно удалено - используется inline редактирование -->
 
 <style>
   .content :global(h3) {
@@ -1138,5 +1325,41 @@
     border-radius: 15px;
     margin: 1.5rem 0;
     border: 1px solid #0891b2;
+  }
+
+  /* Стили для inline редактирования */
+  .inline-editor {
+    background: linear-gradient(135deg, #fef3c7 0%, #fbbf24 100%);
+    border: 2px solid #d97706;
+    border-radius: 12px;
+    padding: 20px;
+    margin: 10px 0;
+  }
+
+  .edit-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid rgba(217, 119, 6, 0.3);
+  }
+
+  .edit-header h3 {
+    margin: 0;
+    color: #92400e;
+    font-size: 1.25rem;
+  }
+
+  .edit-actions {
+    display: flex;
+    gap: 12px;
+  }
+
+  .preview-label {
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #374151;
+    font-size: 14px;
   }
 </style>
