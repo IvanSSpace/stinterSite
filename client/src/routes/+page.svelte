@@ -55,96 +55,13 @@
 
   // Список стран для блока товаров
   const countries = [
-    // Часто используемые страны в начале
-    { value: '🇩🇪 Германия', label: '🇩🇪 Германия' },
-    { value: '🇸🇦 Саудовская Аравия', label: '🇸🇦 Саудовская Аравия' },
-    { value: '🇧🇷 Бразилия', label: '🇧🇷 Бразилия' },
-    { value: '🇰🇿 Казахстан', label: '🇰🇿 Казахстан' },
-    { value: '🇹🇼 Тайвань', label: '🇹🇼 Тайвань' },
-    { value: '🇨🇦 Канада', label: '🇨🇦 Канада' },
-    { value: '🇯🇵 Япония', label: '🇯🇵 Япония' },
-    { value: '🇦🇺 Австралия', label: '🇦🇺 Австралия' },
-    { value: '🇦🇪 ОАЭ', label: '🇦🇪 ОАЭ' },
-    { value: '🇬🇧 Великобритания', label: '🇬🇧 Великобритания' },
-    { value: '🇪🇺 Европа', label: '🇪🇺 Европа' },
-    { value: '🇸🇬 Сингапур', label: '🇸🇬 Сингапур' },
-    { value: '🇮🇳 Индия', label: '🇮🇳 Индия' },
-    { value: '🇰🇷 Южная Корея', label: '🇰🇷 Южная Корея' },
-    { value: '🇨🇳 Китай', label: '🇨🇳 Китай' },
-    { value: '🇭🇰 Гонконг', label: '🇭🇰 Гонконг' },
-    { value: '🇺🇸 США', label: '🇺🇸 США' },
-    // Разделитель
-    { value: '---', label: '────────────────────', disabled: true },
-    // Остальные страны в алфавитном порядке
-    { value: '🇦🇫 Афганистан', label: '🇦🇫 Афганистан' },
-    { value: '🇦🇱 Албания', label: '🇦🇱 Албания' },
-    { value: '🇩🇿 Алжир', label: '🇩🇿 Алжир' },
-    { value: '🇦🇷 Аргентина', label: '🇦🇷 Аргентина' },
-    { value: '🇦🇲 Армения', label: '🇦🇲 Армения' },
-    { value: '🇦🇹 Австрия', label: '🇦🇹 Австрия' },
-    { value: '🇦🇿 Азербайджан', label: '🇦🇿 Азербайджан' },
-    { value: '🇧🇭 Бахрейн', label: '🇧🇭 Бахрейн' },
-    { value: '🇧🇩 Бангладеш', label: '🇧🇩 Бангладеш' },
-    { value: '🇧🇾 Беларусь', label: '🇧🇾 Беларусь' },
-    { value: '🇧🇪 Бельгия', label: '🇧🇪 Бельгия' },
-    { value: '🇧🇬 Болгария', label: '🇧🇬 Болгария' },
-    { value: '🇻🇪 Венесуэла', label: '🇻🇪 Венесуэла' },
-    { value: '🇻🇳 Вьетнам', label: '🇻🇳 Вьетнам' },
-    { value: '🇬🇷 Греция', label: '🇬🇷 Греция' },
-    { value: '🇬🇪 Грузия', label: '🇬🇪 Грузия' },
-    { value: '🇩🇰 Дания', label: '🇩🇰 Дания' },
-    { value: '🇪🇬 Египет', label: '🇪🇬 Египет' },
-    { value: '🇮🇱 Израиль', label: '🇮🇱 Израиль' },
-    { value: '🇮🇩 Индонезия', label: '🇮🇩 Индонезия' },
-    { value: '🇯🇴 Иордания', label: '🇯🇴 Иордания' },
-    { value: '🇮🇶 Ирак', label: '🇮🇶 Ирак' },
-    { value: '🇮🇷 Иран', label: '🇮🇷 Иран' },
-    { value: '🇮🇪 Ирландия', label: '🇮🇪 Ирландия' },
-    { value: '🇮🇸 Исландия', label: '🇮🇸 Исландия' },
-    { value: '🇪🇸 Испания', label: '🇪🇸 Испания' },
-    { value: '🇮🇹 Италия', label: '🇮🇹 Италия' },
-    { value: '🇰🇼 Кувейт', label: '🇰🇼 Кувейт' },
-    { value: '🇰🇬 Кыргызстан', label: '🇰🇬 Кыргызстан' },
-    { value: '🇱🇻 Латвия', label: '🇱🇻 Латвия' },
-    { value: '🇱🇧 Ливан', label: '🇱🇧 Ливан' },
-    { value: '🇱🇹 Литва', label: '🇱🇹 Литва' },
-    { value: '🇱🇺 Люксембург', label: '🇱🇺 Люксембург' },
-    { value: '🇲🇾 Малайзия', label: '🇲🇾 Малайзия' },
-    { value: '🇲🇹 Мальта', label: '🇲🇹 Мальта' },
-    { value: '🇲🇦 Марокко', label: '🇲🇦 Марокко' },
-    { value: '🇲🇽 Мексика', label: '🇲🇽 Мексика' },
-    { value: '🇲🇩 Молдова', label: '🇲🇩 Молдова' },
-    { value: '🇲🇳 Монголия', label: '🇲🇳 Монголия' },
-    { value: '🇳🇵 Непал', label: '🇳🇵 Непал' },
-    { value: '🇳🇱 Нидерланды', label: '🇳🇱 Нидерланды' },
-    { value: '🇳🇿 Новая Зеландия', label: '🇳🇿 Новая Зеландия' },
-    { value: '🇳🇴 Норвегия', label: '🇳🇴 Норвегия' },
-    { value: '🇴🇲 Оман', label: '🇴🇲 Оман' },
-    { value: '🇵🇰 Пакистан', label: '🇵🇰 Пакистан' },
-    { value: '🇵🇱 Польша', label: '🇵🇱 Польша' },
-    { value: '🇵🇹 Португалия', label: '🇵🇹 Португалия' },
-    { value: '🇷🇺 Россия', label: '🇷🇺 Россия' },
-    { value: '🇷🇴 Румыния', label: '🇷🇴 Румыния' },
-    { value: '🇸🇰 Словакия', label: '🇸🇰 Словакия' },
-    { value: '🇸🇮 Словения', label: '🇸🇮 Словения' },
-    { value: '🇹🇭 Таиланд', label: '🇹🇭 Таиланд' },
-    { value: '🇹🇯 Таджикистан', label: '🇹🇯 Таджикистан' },
-    { value: '🇹🇲 Туркменистан', label: '🇹🇲 Туркменистан' },
-    { value: '🇹🇷 Турция', label: '🇹🇷 Турция' },
-    { value: '🇺🇿 Узбекистан', label: '🇺🇿 Узбекистан' },
-    { value: '🇺🇦 Украина', label: '🇺🇦 Украина' },
-    { value: '🇫🇮 Финляндия', label: '🇫🇮 Финляндия' },
-    { value: '🇫🇷 Франция', label: '🇫🇷 Франция' },
-    { value: '🇭🇷 Хорватия', label: '🇭🇷 Хорватия' },
-    { value: '🇨🇿 Чехия', label: '🇨🇿 Чехия' },
-    { value: '🇨🇱 Чили', label: '🇨🇱 Чили' },
-    { value: '🇨🇭 Швейцария', label: '🇨🇭 Швейцария' },
-    { value: '🇸🇪 Швеция', label: '🇸🇪 Швеция' },
-    { value: '🇱🇰 Шри-Ланка', label: '🇱🇰 Шри-Ланка' },
-    { value: '🇪🇨 Эквадор', label: '🇪🇨 Эквадор' },
-    { value: '🇪🇪 Эстония', label: '🇪🇪 Эстония' },
-    { value: '🇿🇦 ЮАР', label: '🇿🇦 ЮАР' },
-    { value: '🇯🇲 Ямайка', label: '🇯🇲 Ямайка' }
+    // Основные страны, используемые в товарах
+    { value: 'Китай', label: '🇨🇳 Китай' },
+    { value: 'Индия', label: '🇮🇳 Индия' },
+    { value: 'США', label: '🇺🇸 США' },
+    { value: 'ОАЭ', label: '🇦🇪 ОАЭ' },
+    { value: 'Европа', label: '🇪🇺 Европа' },
+    { value: 'Япония', label: '🇯🇵 Япония' }
   ];
 
   // Загрузка данных
@@ -356,21 +273,65 @@
   }
 
   function parseProduct(element: Element) {
-    const name = element.querySelector('h4')?.textContent || '';
-    const priceMatch = element.innerHTML.match(/<strong>Цена:<\/strong>\s*([^<]+)/);
-    const regionMatch = element.innerHTML.match(/<strong>Регион:<\/strong>\s*([^<]+)/);
+    // Ищем элементы model и price в структуре товара
+    const modelElement = element.querySelector('.model, span.model');
+    const priceElement = element.querySelector('.price, span.price');
 
-    const paragraphs = Array.from(element.querySelectorAll('p'))
-      .map(p => p.textContent || '')
-      .filter(text => !text.includes('Цена:') && !text.includes('Регион:'));
+    let name = '';
+    let price = '';
+    let region = '';
+    let description = '';
+
+    if (modelElement && priceElement) {
+      // Новая структура с span.model и span.price
+      const modelText = modelElement.textContent || '';
+      const priceText = priceElement.textContent || '';
+
+      // Извлекаем регион из модели (флаг в конце)
+      const regionMatch = modelText.match(/(🇨🇳|🇮🇳|🇺🇸|🇦🇪|🇪🇺|🇯🇵)$/);
+      if (regionMatch) {
+        const flagToCountry: Record<string, string> = {
+          '🇨🇳': 'Китай',
+          '🇮🇳': 'Индия',
+          '🇺🇸': 'США',
+          '🇦🇪': 'ОАЭ',
+          '🇪🇺': 'Европа',
+          '🇯🇵': 'Япония'
+        };
+        region = flagToCountry[regionMatch[1]] || regionMatch[1];
+        name = modelText.replace(regionMatch[1], '').trim();
+      } else {
+        name = modelText;
+      }
+
+      price = priceText;
+    } else {
+      // Старая структура с h4 и strong элементами
+      const titleElement = element.querySelector('h4');
+      if (titleElement) {
+        name = titleElement.textContent || '';
+      }
+
+      const priceMatch = element.innerHTML.match(/<strong>Цена:<\/strong>\s*([^<]+)/);
+      const regionMatch = element.innerHTML.match(/<strong>Регион:<\/strong>\s*([^<]+)/);
+
+      price = priceMatch ? priceMatch[1].trim() : '';
+      region = regionMatch ? regionMatch[1].trim() : '';
+
+      const paragraphs = Array.from(element.querySelectorAll('p'))
+        .map(p => p.textContent || '')
+        .filter(text => !text.includes('Цена:') && !text.includes('Регион:'));
+
+      description = paragraphs.join('\n');
+    }
 
     contentElements.push({
       id: generateId(),
       type: 'product',
       name: name,
-      price: priceMatch ? priceMatch[1].trim() : '',
-      region: regionMatch ? regionMatch[1].trim() : '',
-      description: paragraphs.join('\n')
+      price: price,
+      region: region,
+      description: description
     });
   }
 
@@ -465,12 +426,23 @@
         return `<div class="warning"><p>⚠️ <strong>ВАЖНО:</strong> ${element.text}</p></div>`;
 
       case 'product':
+        // Определяем флаг по региону
+        const countryToFlag: Record<string, string> = {
+          'Китай': '🇨🇳',
+          'Индия': '🇮🇳',
+          'США': '🇺🇸',
+          'ОАЭ': '🇦🇪',
+          'Европа': '🇪🇺',
+          'Япония': '🇯🇵'
+        };
+
+        const regionFlag = element.region ? countryToFlag[element.region] || element.region : '';
+        const modelName = element.name + (regionFlag ? ` ${regionFlag}` : '');
+
         return `
           <div class="product-item">
-            <h4>${element.name}</h4>
-            ${element.price ? `<p><strong>Цена:</strong> ${element.price}</p>` : ''}
-            ${element.region ? `<p><strong>Регион:</strong> ${element.region}</p>` : ''}
-            ${element.description ? `<p>${element.description}</p>` : ''}
+            <span class="model">${modelName}</span>
+            <span class="price">${element.price}</span>
           </div>
         `;
 
@@ -898,19 +870,9 @@
                             <select class="form-select" bind:value={element.region}>
                               <option value="">Выберите страну</option>
                               {#each countries as country}
-                                {#if country.disabled}
-                                  <option value={country.value} disabled>{country.label}</option>
-                                {:else}
-                                  <option value={country.value}>{country.label}</option>
-                                {/if}
+                                <option value={country.value}>{country.label}</option>
                               {/each}
                             </select>
-                            <textarea
-                              class="form-textarea"
-                              bind:value={element.description}
-                              placeholder="Описание товара"
-                              rows="2"
-                            ></textarea>
                           </div>
                         {/if}
                       </div>
@@ -1099,19 +1061,9 @@
                               <select class="form-select" bind:value={element.region}>
                                 <option value="">Выберите страну</option>
                                 {#each countries as country}
-                                  {#if country.disabled}
-                                    <option value={country.value} disabled>{country.label}</option>
-                                  {:else}
-                                    <option value={country.value}>{country.label}</option>
-                                  {/if}
+                                  <option value={country.value}>{country.label}</option>
                                 {/each}
                               </select>
-                              <textarea
-                                class="form-textarea"
-                                bind:value={element.description}
-                                placeholder="Описание товара"
-                                rows="2"
-                              ></textarea>
                             </div>
                           {/if}
                         </div>
@@ -1302,19 +1254,9 @@
                           <select class="form-select" bind:value={element.region}>
                             <option value="">Выберите страну</option>
                             {#each countries as country}
-                              {#if country.disabled}
-                                <option value={country.value} disabled>{country.label}</option>
-                              {:else}
-                                <option value={country.value}>{country.label}</option>
-                              {/if}
+                              <option value={country.value}>{country.label}</option>
                             {/each}
                           </select>
-                          <textarea
-                            class="form-textarea"
-                            bind:value={element.description}
-                            placeholder="Описание товара"
-                            rows="2"
-                          ></textarea>
                         </div>
                       {/if}
                     </div>
