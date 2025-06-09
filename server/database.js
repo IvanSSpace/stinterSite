@@ -729,28 +729,84 @@ export class Database {
   }
 
   createContentBlock(data) {
-    return new Promise((resolve, reject) => {
-      const { title, content, block_type, position } = data
-      this.db.run(
-        `
-        INSERT INTO content_blocks (title, content, block_type, position)
-        VALUES (?, ?, ?, ?)
-      `,
-        [title, content, block_type, position],
-        function (err) {
-          if (err) reject(err)
-          else resolve(this.lastID)
+    return new Promise(async (resolve, reject) => {
+      try {
+        const { title, content, block_type, position } = data
+
+        // Если указана позиция, сдвигаем все блоки с позицией >= указанной на 1 вниз
+        if (position && position > 0) {
+          await new Promise((shiftResolve, shiftReject) => {
+            this.db.run(
+              "UPDATE content_blocks SET position = position + 1 WHERE position >= ?",
+              [position],
+              function (err) {
+                if (err) shiftReject(err)
+                else shiftResolve(this.changes)
+              }
+            )
+          })
         }
-      )
+
+        // Теперь вставляем новый блок
+        this.db.run(
+          `
+          INSERT INTO content_blocks (title, content, block_type, position)
+          VALUES (?, ?, ?, ?)
+        `,
+          [title, content, block_type, position || 0],
+          function (err) {
+            if (err) reject(err)
+            else resolve(this.lastID)
+          }
+        )
+      } catch (error) {
+        reject(error)
+      }
     })
   }
 
   deleteContentBlock(id) {
-    return new Promise((resolve, reject) => {
-      this.db.run("DELETE FROM content_blocks WHERE id = ?", [id], function (err) {
-        if (err) reject(err)
-        else resolve(this.changes)
-      })
+    return new Promise(async (resolve, reject) => {
+      try {
+        // Сначала получаем позицию удаляемого блока
+        const block = await new Promise((getResolve, getReject) => {
+          this.db.get("SELECT position FROM content_blocks WHERE id = ?", [id], (err, row) => {
+            if (err) getReject(err)
+            else getResolve(row)
+          })
+        })
+
+        if (!block) {
+          resolve(0) // Блок не найден
+          return
+        }
+
+        // Удаляем блок
+        const changes = await new Promise((deleteResolve, deleteReject) => {
+          this.db.run("DELETE FROM content_blocks WHERE id = ?", [id], function (err) {
+            if (err) deleteReject(err)
+            else deleteResolve(this.changes)
+          })
+        })
+
+        // Сдвигаем позиции всех блоков с позицией > удаленного на 1 вверх
+        if (block.position && changes > 0) {
+          await new Promise((shiftResolve, shiftReject) => {
+            this.db.run(
+              "UPDATE content_blocks SET position = position - 1 WHERE position > ?",
+              [block.position],
+              function (err) {
+                if (err) shiftReject(err)
+                else shiftResolve(this.changes)
+              }
+            )
+          })
+        }
+
+        resolve(changes)
+      } catch (error) {
+        reject(error)
+      }
     })
   }
 
