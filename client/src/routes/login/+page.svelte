@@ -2,6 +2,7 @@
   import { browser } from '$app/environment';
   import { goto } from '$app/navigation';
   import { onMount } from 'svelte';
+  import { API_URL } from '../../config.js';
 
   // Состояние формы
   let username = $state('');
@@ -15,7 +16,7 @@
       const token = localStorage.getItem('stiner_token');
       if (token) {
         try {
-          const response = await fetch('http://localhost:3001/api/auth/verify', {
+          const response = await fetch(`${API_URL}/api/auth/verify`, {
             headers: {
               'Authorization': `Bearer ${token}`
             }
@@ -44,7 +45,7 @@
     error = '';
 
     try {
-      const response = await fetch('http://localhost:3001/api/auth/login', {
+      const response = await fetch(`${API_URL}/api/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

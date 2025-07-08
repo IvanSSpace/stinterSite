@@ -22,6 +22,11 @@ app.use(
       "http://localhost:5175",
       "http://localhost:5176",
       "http://localhost:3000",
+      "https://deathly-one-ling.cloudpub.ru",
+      "http://deathly-one-ling.cloudpub.ru",
+      "https://huffily-electric-violetear.cloudpub.ru",
+      "https://warmly-inviting-tragopan.cloudpub.ru",
+      "http://warmly-inviting-tragopan.cloudpub.ru"
     ],
     credentials: true,
   })

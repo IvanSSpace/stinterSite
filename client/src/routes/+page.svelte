@@ -1,6 +1,7 @@
 <script lang="ts">
   import { browser } from '$app/environment';
   import { onMount } from 'svelte';
+  import { API_URL } from '../config.js';
 
   // Типы данных
   interface ContentBlock {
@@ -72,7 +73,7 @@
 
   const loadContent = async () => {
     try {
-      const response = await fetch('http://localhost:3001/api/content/blocks');
+      const response = await fetch(`${API_URL}/api/content/blocks`);
       const data = await response.json();
 
       if (data.success) {
@@ -94,7 +95,7 @@
       const token = localStorage.getItem('stiner_token');
       if (token) {
         try {
-          const response = await fetch('http://localhost:3001/api/auth/verify', {
+          const response = await fetch(`${API_URL}/api/auth/verify`, {
             headers: {
               'Authorization': `Bearer ${token}`
             }
@@ -466,7 +467,7 @@
       // Генерируем HTML из элементов конструктора
       const generatedContent = generateHTMLFromElements();
 
-      const response = await fetch(`http://localhost:3001/api/content/blocks/${editingBlockId}`, {
+      const response = await fetch(`${API_URL}/api/content/blocks/${editingBlockId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -539,7 +540,7 @@
     }
 
     try {
-      const response = await fetch(`http://localhost:3001/api/content/blocks/${blockId}`, {
+      const response = await fetch(`${API_URL}/api/content/blocks/${blockId}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -599,7 +600,7 @@
       // Генерируем HTML из элементов конструктора
       const generatedContent = generateHTMLFromElements();
 
-      const response = await fetch('http://localhost:3001/api/content/blocks', {
+      const response = await fetch(`${API_URL}/api/content/blocks`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -1453,12 +1454,6 @@
     outline: none;
     border-color: #4299e1;
     box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
-  }
-
-  .form-select option[disabled] {
-    color: #a0aec0;
-    background: #f7fafc;
-    font-weight: normal;
   }
 
   .emoji-input {
